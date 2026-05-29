@@ -1,133 +1,179 @@
+```html
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>StudyAI</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    body {
-      background: #0f172a;
-      color: white;
-      font-family: Arial, sans-serif;
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(to bottom right,#05010a,#14061f,#24082f);
+      color:white;
+      overflow:hidden;
     }
 
-    .glass {
-      background: rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
+    .glass{
+      background:rgba(255,255,255,0.05);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,0.08);
     }
 
-    #messages::-webkit-scrollbar {
-      width: 6px;
+    #messages::-webkit-scrollbar{
+      width:6px;
     }
 
-    #messages::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 20px;
+    #messages::-webkit-scrollbar-thumb{
+      background:#ff4fd8;
+      border-radius:20px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="flex h-screen">
+<div class="flex h-screen">
 
-    <!-- Sidebar -->
-    <aside class="w-64 glass p-5 hidden md:block">
+  <!-- Sidebar -->
+  <aside class="w-72 glass p-6 hidden md:block">
 
-      <h1 class="text-3xl font-bold mb-8">
-        StudyAI
-      </h1>
+    <h1 class="text-4xl font-bold text-pink-400 mb-10">
+      StudyAI
+    </h1>
 
-      <nav class="space-y-4">
+    <div class="space-y-4">
 
-        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
-          Dashboard
-        </button>
+      <button class="w-full bg-pink-600 hover:bg-pink-500 transition p-4 rounded-2xl text-left">
+        AI Tutor
+      </button>
 
-        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
-          Flashcards
-        </button>
+      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+        Flashcards
+      </button>
 
-        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
-          Quizzes
-        </button>
+      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+        Quizzes
+      </button>
 
-        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
-          AI Tutor
-        </button>
+      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+        Summaries
+      </button>
 
-      </nav>
+    </div>
 
-    </aside>
+  </aside>
 
-    <!-- Main -->
-    <main class="flex-1 flex flex-col">
+  <!-- Main -->
+  <main class="flex-1 p-8 overflow-y-auto">
 
-      <!-- Header -->
-      <header class="glass p-4 border-b border-slate-700 flex justify-between items-center">
+    <div class="max-w-5xl mx-auto">
 
-        <div>
-          <h2 class="text-2xl font-semibold">
-            AI Study Assistant
-          </h2>
+      <div class="glass rounded-3xl p-8">
 
-          <p class="text-slate-400 text-sm">
-            Ask questions and study smarter
-          </p>
-        </div>
+        <h2 class="text-5xl font-bold text-pink-400 mb-4">
+          AI Study Assistant
+        </h2>
 
-        <button class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl transition">
-          Upload Notes
-        </button>
+        <p class="text-zinc-400 text-lg mb-8">
+          Upload notes, paste YouTube links, generate quizzes and summaries.
+        </p>
 
-      </header>
+        <!-- Upload -->
+        <div class="glass rounded-3xl p-8 mb-8">
 
-      <!-- Chat -->
-      <section class="flex-1 flex flex-col p-6 overflow-hidden">
-
-        <!-- Messages -->
-        <div
-          id="messages"
-          class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2"
-        >
-
-          <div class="glass p-4 rounded-2xl max-w-xl">
-            👋 Welcome to StudyAI. Ask me anything.
-          </div>
-
-        </div>
-
-        <!-- Input -->
-        <div class="glass p-4 rounded-2xl flex gap-3">
+          <h3 class="text-2xl mb-4">
+            Upload Documents
+          </h3>
 
           <input
-            id="messageInput"
-            type="text"
-            placeholder="Ask a question..."
-            class="flex-1 bg-transparent outline-none text-white"
-          />
-
-          <button
-            id="sendBtn"
-            class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-xl transition"
+            type="file"
+            id="fileInput"
+            multiple
+            class="w-full bg-zinc-900 p-4 rounded-2xl"
           >
-            Send
-          </button>
+
+          <p class="text-zinc-500 mt-3">
+            Supports PDF, DOCX, PPTX, TXT, Images
+          </p>
 
         </div>
 
-      </section>
+        <!-- YouTube -->
+        <div class="glass rounded-3xl p-8 mb-8">
 
-    </main>
+          <h3 class="text-2xl mb-4">
+            YouTube Link
+          </h3>
 
-  </div>
+          <input
+            type="text"
+            id="youtubeInput"
+            placeholder="Paste YouTube URL..."
+            class="w-full bg-zinc-900 p-4 rounded-2xl outline-none"
+          >
 
-  <script src="chat.js"></script>
+        </div>
+
+        <!-- Quiz Amount -->
+        <div class="glass rounded-3xl p-8 mb-8">
+
+          <h3 class="text-2xl mb-4">
+            Quiz Questions
+          </h3>
+
+          <select
+            id="quizAmount"
+            class="bg-zinc-900 p-4 rounded-2xl"
+          >
+            <option>10</option>
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+            <option>120</option>
+          </select>
+
+        </div>
+
+        <!-- AI Input -->
+        <textarea
+          id="messageInput"
+          placeholder="Ask AI to generate summaries, quizzes, flashcards..."
+          class="w-full h-52 bg-zinc-900 p-6 rounded-3xl outline-none text-lg"
+        ></textarea>
+
+        <!-- Button -->
+        <button
+          id="sendBtn"
+          class="mt-6 bg-gradient-to-r from-pink-500 to-fuchsia-700 hover:scale-105 transition px-10 py-5 rounded-2xl text-lg font-bold"
+        >
+          Generate Study Materials
+        </button>
+
+        <!-- Output -->
+        <div
+          id="messages"
+          class="mt-10 glass rounded-3xl p-8 h-96 overflow-y-auto whitespace-pre-wrap leading-8"
+        >
+          👋 Welcome to StudyAI
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="chat.js"></script>
 
 </body>
 </html>
+```
