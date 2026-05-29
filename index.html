@@ -1,313 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Studify Workstation Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#06080E;
-  --surface:#0B0F19;
-  --surface2:#121829;
-  --surface3:#182036;
-  --border:#1E294B;
-  --text:#F8FAFC;
-  --text2:#94A3B8;
-  --text3:#475569;
-  --accent:#1D4ED8;
-  --accent2:#3B82F6;
-  --accent-light:#0C1938;
-  --accent-glow:rgba(37,99,235,0.12);
-  --danger:#EF4444;
-  --danger-light:#1F1015;
-  --success:#10B981;
-  --success-light:#051F16;
-  --radius:16px;--radius-sm:10px;--radius-xs:6px;
-}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.dashboard{display:flex;height:100vh;width:100vw;position:relative}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-/* SIDE PANEL LOGIC */
-.panel-left{width:40%;background:var(--surface);border-right:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1.75rem;overflow-y:auto;position:relative;z-index:10}
-.panel-right{width:60%;background:var(--bg);padding:2rem;display:flex;flex-direction:column;overflow-y:auto;position:relative;z-index:5}
+  <title>StudyAI</title>
 
-.header{display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:24px;font-weight:800;letter-spacing:-0.5px;color:var(--text);display:flex;align-items:center;gap:8px}
-.logo span{color:var(--accent2);font-weight:900}
-.panel-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+  <script src="https://cdn.tailwindcss.com"></script>
 
-.input-container{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;gap:14px;position:relative}
-textarea{width:100%;min-height:240px;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--bg);resize:none;outline:none;transition:all 0.2s;line-height:1.7}
-textarea:focus{border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
-textarea::placeholder{color:var(--text3)}
-.word-count{font-size:11px;color:var(--text3);text-align:right;font-weight:600;margin-top:4px}
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
 
-.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.nav-btn{padding:14px;font-size:13px;font-weight:700;font-family:inherit;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px}
-.nav-btn:hover{border-color:var(--accent);color:var(--text)}
-.nav-btn.active{background:var(--accent-light);color:var(--accent2);border-color:var(--accent);box-shadow:0 4px 15px var(--accent-glow)}
+    .glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
 
-.action-btn{width:100%;padding:15px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(37,99,235,0.15)}
-.action-btn:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
-.action-btn:disabled{opacity:0.25;cursor:not-allowed;box-shadow:none}
+    #messages::-webkit-scrollbar {
+      width: 6px;
+    }
 
-/* RENDERING INTERFACES */
-.page{display:none;height:100%;flex-direction:column;gap:1.25rem}.page.active{display:flex}
-.result-container{flex:1;overflow-y:auto;padding-right:4px}
-.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.block{padding:1.5rem;border-bottom:1px solid var(--border)}
-.block:last-child{border-bottom:none}
-.block-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.block-label::before{content:'';width:4px;height:14px;background:var(--accent);border-radius:2px}
-.summary-text{font-size:14px;line-height:1.8;color:var(--text2);white-space:pre-wrap;text-align:justify}
-
-.kp-list{list-style:none;display:flex;flex-direction:column;gap:12px}
-.kp{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.7;color:var(--text2)}
-.kp-n{min-width:24px;height:24px;background:var(--accent-light);color:var(--accent2);border-radius:6px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1px solid rgba(59,130,246,0.15)}
-
-.copy-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.result-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3)}
-.copy-btn{font-family:inherit;font-size:12px;padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;cursor:pointer;color:var(--text2);transition:all 0.2s;font-weight:600}
-.copy-btn:hover{background:var(--accent-light);color:var(--accent2);border-color:var(--accent)}
-
-/* QUIZ ELEMENTS */
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:12px}
-.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.q-num{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
-.q-text{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.5}
-.options{display:flex;flex-direction:column;gap:8px}
-.opt{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;font-size:13px;color:var(--text2);background:var(--bg);font-family:inherit;text-align:left;width:100%}
-.opt:hover:not(:disabled){border-color:var(--accent);color:var(--text);background:var(--accent-light)}
-.opt.selected{border-color:var(--accent);color:var(--accent2);background:var(--accent-light)}
-.opt.reveal-correct{border-color:var(--success);background:var(--success-light);color:var(--success)}
-.opt.wrong{border-color:var(--danger);background:var(--danger-light);color:var(--danger)}
-.opt-letter{min-width:24px;height:24px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--text3)}
-.opt.selected .opt-letter{background:var(--accent);color:white;border-color:var(--accent)}
-.explanation{margin-top:14px;font-size:12.5px;line-height:1.7;color:var(--text2);padding:14px;background:var(--surface2);border-radius:var(--radius-sm);border-left:4px solid var(--accent)}
-
-.score-bar{background:linear-gradient(135deg,var(--accent-light),var(--surface));border:1px solid rgba(59,130,246,0.15);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
-.score-num{font-size:38px;font-weight:800;color:var(--accent2);letter-spacing:-1px}
-.score-pct{font-size:15px;font-weight:700;color:var(--accent2);margin-bottom:6px;display:block}
-.retake-btn{font-family:inherit;font-size:12px;padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-xs);cursor:pointer;color:var(--text2);font-weight:700;transition:all 0.2s}
-
-/* COMPANION TERMINAL CHAT */
-.chat-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;height:100%}
-.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--surface2)}
-.tutor-avatar{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;font-weight:800}
-.chat-messages{padding:20px;display:flex;flex-direction:column;gap:14px;flex:1;max-height:calc(100vh - 250px);overflow-y:auto}
-.msg{max-width:85%;display:flex;flex-direction:column;gap:4px}
-.msg.user{align-self:flex-end;align-items:flex-end}
-.msg.bot{align-self:flex-start;align-items:flex-start}
-.bubble{padding:12px 16px;border-radius:var(--radius);font-size:13.5px;line-height:1.7}
-.msg.user .bubble{background:var(--accent);color:white;border-bottom-right-radius:4px}
-.msg.bot .bubble{background:var(--surface2);color:var(--text2);border-bottom-left-radius:4px;border:1px solid var(--border)}
-.chat-input-row{padding:16px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--surface2)}
-.chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--bg);outline:none;height:44px}
-.send-btn{width:44px;height:44px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:16px}
-
-.no-content-notice{text-align:center;padding:6rem 2rem;color:var(--text3);font-size:13.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:1rem}
-.no-content-notice strong{display:block;font-size:15px;color:var(--text2);margin-bottom:6px;font-weight:700}
-.loader-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:5rem 0;gap:12px}
-.spinner{width:32px;height:32px;border:2.5px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
+    #messages::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 20px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="dashboard">
 
-  <div class="panel-left">
-    <div class="header"><div class="logo">✦ Studify<span>Workstation</span></div></div>
-    <div class="input-container">
-      <div class="panel-label">Source Processing Core</div>
-      <textarea id="pasteArea" placeholder="Paste study notes, corporate finance frameworks, formula data sheet parameters, or insurance analysis briefs here..." oninput="onPasteInput()"></textarea>
-      <div class="word-count" id="wc">0 words loaded</div>
-    </div>
-    <div class="panel-label">System Architecture Modules</div>
-    <div class="nav">
-      <button class="nav-btn active" id="nav-summary" onclick="goPage('summary')"><span>📋</span>Summary</button>
-      <button class="nav-btn" id="nav-quiz" onclick="goPage('quiz')"><span>🧠</span>Quiz Matrix</button>
-      <button class="nav-btn" id="nav-tutor" onclick="goPage('tutor')"><span>💬</span>Companion</button>
-    </div>
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 glass p-5 hidden md:block">
+
+      <h1 class="text-3xl font-bold mb-8">
+        StudyAI
+      </h1>
+
+      <nav class="space-y-4">
+
+        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
+          Dashboard
+        </button>
+
+        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
+          Flashcards
+        </button>
+
+        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
+          Quizzes
+        </button>
+
+        <button class="w-full text-left p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
+          AI Tutor
+        </button>
+
+      </nav>
+
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col">
+
+      <!-- Header -->
+      <header class="glass p-4 border-b border-slate-700 flex justify-between items-center">
+
+        <div>
+          <h2 class="text-2xl font-semibold">
+            AI Study Assistant
+          </h2>
+
+          <p class="text-slate-400 text-sm">
+            Ask questions and study smarter
+          </p>
+        </div>
+
+        <button class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl transition">
+          Upload Notes
+        </button>
+
+      </header>
+
+      <!-- Chat -->
+      <section class="flex-1 flex flex-col p-6 overflow-hidden">
+
+        <!-- Messages -->
+        <div
+          id="messages"
+          class="flex-1 overflow-y-auto space-y-4 mb-4 pr-2"
+        >
+
+          <div class="glass p-4 rounded-2xl max-w-xl">
+            👋 Welcome to StudyAI. Ask me anything.
+          </div>
+
+        </div>
+
+        <!-- Input -->
+        <div class="glass p-4 rounded-2xl flex gap-3">
+
+          <input
+            id="messageInput"
+            type="text"
+            placeholder="Ask a question..."
+            class="flex-1 bg-transparent outline-none text-white"
+          />
+
+          <button
+            id="sendBtn"
+            class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-xl transition"
+          >
+            Send
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
   </div>
 
-  <div class="panel-right">
-    <div id="page-summary" class="page active">
-      <button class="action-btn" id="summaryBtn" onclick="doSummary()" disabled>✦ Compile Exhaustive Structural Review</button>
-      <div id="summaryResult" class="result-container">
-        <div class="no-content-notice"><strong>Data Streams Disconnected</strong>Load text sources or metrics notes in the left console framework.</div>
-      </div>
-    </div>
+  <script src="chat.js"></script>
 
-    <div id="page-quiz" class="page">
-      <button class="action-btn" id="quizBtn" onclick="doLiveQuiz()" disabled>⚡ Initialize Live Evaluation Matrix</button>
-      <div id="quizResult" class="result-container">
-        <div class="no-content-notice"><strong>No Active Assessment Target</strong>Load system materials to synthesize an evaluation script.</div>
-      </div>
-    </div>
-
-    <div id="page-tutor" class="page">
-      <div class="chat-wrap">
-        <div class="chat-header"><div class="tutor-avatar">✦</div><div><strong style="font-size:14px">Studify AI Companion</strong><div style="font-size:11px;color:var(--text3)">Live Architecture Active</div></div></div>
-        <div class="chat-messages" id="chatMsgs">
-          <div class="msg bot"><div class="bubble">Interactive framework fully operational. Ask for conceptual breakdowns or formula explanations from your document text block.</div></div>
-        </div>
-        <div class="chat-input-row">
-          <input class="chat-input" id="chatIn" placeholder="Query data dependencies or request conceptual breakdown schemas..." onkeydown="if(event.key==='Enter')sendChat()"/>
-          <button class="send-btn" onclick="sendChat()">➤</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-let chatHistory=[], quizData=null, quizAnswers={}, quizSubmitted=false, rawResponseString="";
-
-function hasContent(){return document.getElementById('pasteArea').value.trim().length>=10}
-function onPasteInput(){
-  const t=document.getElementById('pasteArea').value.trim();
-  const w=t?t.split(/\s+/).length:0;
-  document.getElementById('wc').textContent=w+' words loaded';
-  const ok=hasContent();
-  document.getElementById('summaryBtn').disabled=!ok;
-  document.getElementById('quizBtn').disabled=!ok;
-}
-function goPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.getElementById('nav-'+p).classList.add('active');
-}
-
-async function callAI(system, messages) {
-  const r = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ system, messages })
-  });
-  const data = await r.json();
-  if (!r.ok) throw new Error(data.error || 'Server pipeline processing error');
-  return data.content;
-}
-
-async function doSummary(){
-  const val = document.getElementById('pasteArea').value.trim();
-  const out = document.getElementById('summaryResult');
-  out.innerHTML = `<div class="loader-wrap"><div class="spinner"></div><div style="font-size:13px;color:var(--text2)">Deconstructing components and compiling review profiles...</div></div>`;
-  try {
-    const sys = "You are a masterful structural academic engine. Output an overall summary block first, followed by exactly 3 core structural key points, and then a line of important keywords. Split sections cleanly with unique headers.";
-    const txt = await callAI(sys, [{ role: 'user', content: val }]);
-    rawResponseString = txt;
-    
-    // Parse structural points elegantly out of the live API generation
-    const lines = txt.split('\n').filter(l=>l.trim().length>2);
-    const bullets = lines.filter(l=>l.trim().startsWith('-') || l.trim().match(/^\d/)).slice(0,3);
-    const displayBullets = bullets.length === 3 ? bullets : ["Review standard accounting and liability criteria across datasets.","Map critical framework layers matching specific regulatory standards.","Verify output metrics against baseline corporate profiles."];
-
-    const kp = displayBullets.map((p,i)=>`<li class="kp"><span class="kp-n">${i+1}</span><span>${p.replace(/^[-0-9.\s]+/,'')}</span></li>`).join('');
-    
-    out.innerHTML = `
-      <div class="copy-row"><span class="result-title">Live Structural Output Profile</span><button class="copy-btn" onclick="copySum()">⎘ Copy Workstation Summary</button></div>
-      <div class="result-card">
-        <div class="block">
-          <div class="block-label">Exhaustive Literature Breakdown</div>
-          <p class="summary-text">${txt}</p>
-        </div>
-        <div class="block">
-          <div class="block-label">Core Extracted Academic Concepts</div>
-          <ul class="kp-list">${kp}</ul>
-        </div>
-      </div>`;
-  } catch(e) {
-    out.innerHTML = `<div style="color:var(--danger);padding:1rem">Execution Error: ${e.message}</div>`;
-  }
-}
-
-function copySum(){
-  navigator.clipboard.writeText(rawResponseString || document.getElementById('pasteArea').value);
-  const b=document.querySelector('.copy-btn');
-  if(b){b.textContent='✓ Copied!';setTimeout(()=>b.textContent='⎘ Copy Workstation Summary',2000)}
-}
-
-async function doLiveQuiz(){
-  const val = document.getElementById('pasteArea').value.trim();
-  const out = document.getElementById('quizResult');
-  out.innerHTML = `<div class="loader-wrap"><div class="spinner"></div><div style="font-size:13px;color:var(--text2)">Compiling evaluation script array from live notes...</div></div>`;
-  try {
-    const sys = "You must output a strictly structured JSON array of exactly 2 questions based on the text. No markdown wrap, no other text outside the JSON code array. Format: [{\"question\":\"text\",\"options\":[\"A...\",\"B...\",\"C...\",\"D...\"],\"answer\":0,\"explanation\":\"text\"}]";
-    const txt = await callAI(sys, [{ role: 'user', content: val }]);
-    
-    // Clean potential markdown code wrapper syntax if returned by the endpoint
-    const cleanJson = txt.replace(/```json/g,'').replace(/```/g,'').trim();
-    quizData = JSON.parse(cleanJson);
-    quizAnswers = {}; quizSubmitted = false;
-    renderQuiz();
-  } catch(e) {
-    // Elegant fallback layout if the text isn't returned as pure valid JSON
-    out.innerHTML = `
-      <div class="copy-row"><span class="result-title">AI Evaluation Matrix Raw Output</span></div>
-      <div class="result-card" style="padding:1.5rem">
-        <div class="block-label" style="color:var(--accent2)">Generated Evaluation Script</div>
-        <div style="white-space:pre-wrap; font-size:13.5px; line-height:1.7; color:var(--text2)">${rawResponseString || "Re-running process layers..."}</div>
-        <button class="action-btn" onclick="doLiveQuiz()" style="margin-top:1rem">⚡ Attempt Restructure Sync</button>
-      </div>`;
-    rawResponseString = e.message;
-  }
-}
-
-function renderQuiz(){
-  if(!quizData) return;
-  const letters = ['A','B','C','D'];
-  let scoreHtml = '';
-  if(quizSubmitted){
-    const score = quizData.filter((_,i)=>quizAnswers[i]===quizData[i].answer).length;
-    const pct = Math.round((score/quizData.length)*100);
-    scoreHtml = `<div class="score-bar"><div><div class="score-num">${score}/${quizData.length}</div><div class="score-label">Evaluation Framework Completed</div></div><div style="text-align:right"><span class="score-pct">✨ ${pct}% Score Metric</span><button class="retake-btn" onclick="doLiveQuiz()">↺ Re-run Script</button></div></div>`;
-  }
-  const qs = quizData.map((q,qi)=>{
-    const opts = q.options.map((o,oi)=>{
-      let cls = 'opt';
-      if(quizSubmitted){ if(oi===q.answer) cls+=' reveal-correct'; else if(quizAnswers[qi]===oi) cls+=' wrong'; }
-      else if(quizAnswers[qi]===oi) cls+=' selected';
-      return `<button class="${cls}" onclick="selectOpt(${qi},${oi})" ${quizSubmitted?'disabled':''}><span class="opt-letter">${letters[oi]}</span>${o.replace(/^[A-D][.\s-]*/,'')}</button>`
-    }).join('');
-    return `<div class="q-card"><div class="q-meta"><span class="q-num">Assessment Matrix Unit ${qi+1}/${quizData.length}</span></div><div class="q-text">${q.question}</div><div class="options">${opts}</div>${quizSubmitted?`<div class="explanation">💡 Explanatory Blueprint: ${q.explanation}</div>`:''}</div>`;
-  }).join('');
-  const allAnswered = quizData.every((_,i)=>quizAnswers[i]!==undefined);
-  document.getElementById('quizResult').innerHTML = `<div>${scoreHtml}${qs}${!quizSubmitted?`<button class="action-btn" onclick="submitQuiz()" style="margin-top:4px" ${allAnswered?'':'disabled'}>Compile and Audit Assessment Metrics</button>`:''}</div>`;
-}
-function selectOpt(qi,oi){ if(quizSubmitted) return; quizAnswers[qi]=oi; renderQuiz(); }
-function submitQuiz(){ quizSubmitted=true; renderQuiz(); }
-
-async function sendChat(){
-  const inp = document.getElementById('chatIn'); const msg = inp.value.trim(); if(!msg)return;
-  const contextDoc = document.getElementById('pasteArea').value.trim();
-  inp.value = '';
-  
-  const container = document.getElementById('chatMsgs');
-  container.innerHTML += `<div class="msg user"><div class="bubble">${msg}</div></div>`;
-  container.scrollTop = container.scrollHeight;
-  
-  const tid = 't' + Date.now();
-  container.innerHTML += `<div class="msg bot" id="${tid}"><div class="bubble"><div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0"></div></div></div>`;
-  container.scrollTop = container.scrollHeight;
-
-  chatHistory.push({ role: 'user', content: msg });
-  try {
-    const sys = `You are an elite academic terminal. Answer the query contextually using this structural literature block as your primary truth framework:\n\n${contextDoc}`;
-    const reply = await callAI(sys, chatHistory);
-    document.getElementById(tid).remove();
-    container.innerHTML += `<div class="msg bot"><div class="bubble">${reply.replace(/\n/g,'<br>')}</div></div>`;
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch(e) {
-    document.getElementById(tid).remove();
-    container.innerHTML += `<div class="msg bot"><div class="bubble" style="color:var(--danger)">Connection Pipeline interrupted. Check upstream keys.</div></div>`;
-  }
-  container.scrollTop = container.scrollHeight;
-}
-</script>
 </body>
 </html>
