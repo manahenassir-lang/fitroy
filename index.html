@@ -3,8 +3,11 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>StudyAI</title>
@@ -12,29 +15,47 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+
     body{
       margin:0;
       font-family:Arial,sans-serif;
-      background:linear-gradient(to bottom right,#05010a,#14061f,#24082f);
+      background:
+      linear-gradient(
+        to bottom right,
+        #05010a,
+        #16051f,
+        #2d083f
+      );
+
       color:white;
       overflow:hidden;
     }
 
     .glass{
       background:rgba(255,255,255,0.05);
-      backdrop-filter:blur(12px);
+      backdrop-filter:blur(14px);
       border:1px solid rgba(255,255,255,0.08);
     }
 
-    #messages::-webkit-scrollbar{
+    textarea{
+      resize:none;
+    }
+
+    #output::-webkit-scrollbar{
       width:6px;
     }
 
-    #messages::-webkit-scrollbar-thumb{
+    #output::-webkit-scrollbar-thumb{
       background:#ff4fd8;
       border-radius:20px;
     }
+
+    .activeMode{
+      background:#ec4899 !important;
+    }
+
   </style>
+
 </head>
 
 <body>
@@ -42,6 +63,7 @@
 <div class="flex h-screen">
 
   <!-- Sidebar -->
+
   <aside class="w-72 glass p-6 hidden md:block">
 
     <h1 class="text-4xl font-bold text-pink-400 mb-10">
@@ -50,19 +72,19 @@
 
     <div class="space-y-4">
 
-      <button class="w-full bg-pink-600 hover:bg-pink-500 transition p-4 rounded-2xl text-left">
+      <button class="w-full bg-pink-600 p-4 rounded-2xl text-left">
         AI Tutor
       </button>
 
-      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+      <button class="w-full bg-zinc-900 p-4 rounded-2xl text-left">
         Flashcards
       </button>
 
-      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+      <button class="w-full bg-zinc-900 p-4 rounded-2xl text-left">
         Quizzes
       </button>
 
-      <button class="w-full bg-zinc-900 hover:bg-zinc-800 transition p-4 rounded-2xl text-left">
+      <button class="w-full bg-zinc-900 p-4 rounded-2xl text-left">
         Summaries
       </button>
 
@@ -71,25 +93,27 @@
   </aside>
 
   <!-- Main -->
-  <main class="flex-1 p-8 overflow-y-auto">
 
-    <div class="max-w-5xl mx-auto">
+  <main class="flex-1 overflow-y-auto p-8">
+
+    <div class="max-w-6xl mx-auto">
 
       <div class="glass rounded-3xl p-8">
 
         <h2 class="text-5xl font-bold text-pink-400 mb-4">
-          AI Study Assistant
+          AI Study Platform
         </h2>
 
         <p class="text-zinc-400 text-lg mb-8">
-          Upload notes, paste YouTube links, generate quizzes and summaries.
+          Upload documents, paste YouTube links, create quizzes, flashcards and detailed summaries.
         </p>
 
         <!-- Upload -->
+
         <div class="glass rounded-3xl p-8 mb-8">
 
           <h3 class="text-2xl mb-4">
-            Upload Documents
+            Upload Files
           </h3>
 
           <input
@@ -99,13 +123,14 @@
             class="w-full bg-zinc-900 p-4 rounded-2xl"
           >
 
-          <p class="text-zinc-500 mt-3">
-            Supports PDF, DOCX, PPTX, TXT, Images
+          <p class="text-zinc-500 mt-4">
+            Supports PDF, DOCX, PPTX, TXT and Images
           </p>
 
         </div>
 
         <!-- YouTube -->
+
         <div class="glass rounded-3xl p-8 mb-8">
 
           <h3 class="text-2xl mb-4">
@@ -121,45 +146,69 @@
 
         </div>
 
+        <!-- Modes -->
+
+        <div class="flex gap-4 mb-8">
+
+          <button class="modeBtn activeMode bg-zinc-900 px-6 py-4 rounded-2xl">
+            Summary
+          </button>
+
+          <button class="modeBtn bg-zinc-900 px-6 py-4 rounded-2xl">
+            Flashcards
+          </button>
+
+          <button class="modeBtn bg-zinc-900 px-6 py-4 rounded-2xl">
+            Quiz
+          </button>
+
+        </div>
+
         <!-- Quiz Amount -->
+
         <div class="glass rounded-3xl p-8 mb-8">
 
           <h3 class="text-2xl mb-4">
-            Quiz Questions
+            Quiz Amount
           </h3>
 
           <select
             id="quizAmount"
             class="bg-zinc-900 p-4 rounded-2xl"
           >
+
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
             <option>120</option>
+
           </select>
 
         </div>
 
-        <!-- AI Input -->
+        <!-- Prompt -->
+
         <textarea
           id="messageInput"
-          placeholder="Ask AI to generate summaries, quizzes, flashcards..."
-          class="w-full h-52 bg-zinc-900 p-6 rounded-3xl outline-none text-lg"
+          placeholder="Paste notes or ask AI..."
+          class="w-full h-56 bg-zinc-900 rounded-3xl p-6 outline-none text-lg"
         ></textarea>
 
-        <!-- Button -->
+        <!-- Generate -->
+
         <button
-          id="sendBtn"
+          id="generateBtn"
           class="mt-6 bg-gradient-to-r from-pink-500 to-fuchsia-700 hover:scale-105 transition px-10 py-5 rounded-2xl text-lg font-bold"
         >
-          Generate Study Materials
+          Generate
         </button>
 
         <!-- Output -->
+
         <div
-          id="messages"
-          class="mt-10 glass rounded-3xl p-8 h-96 overflow-y-auto whitespace-pre-wrap leading-8"
+          id="output"
+          class="mt-10 glass rounded-3xl p-8 h-[500px] overflow-y-auto whitespace-pre-wrap leading-8"
         >
           👋 Welcome to StudyAI
         </div>
@@ -175,5 +224,6 @@
 <script src="chat.js"></script>
 
 </body>
+
 </html>
 ```
