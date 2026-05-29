@@ -1,159 +1,95 @@
-```javascript
-// chat.js
-
-const generateBtn = document.getElementById("generateBtn");
-
-const input = document.getElementById("messageInput");
-
+const btn = document.getElementById("btn");
+const input = document.getElementById("input");
 const output = document.getElementById("output");
+const quizCount = document.getElementById("quizCount");
 
-const quizAmount = document.getElementById("quizAmount");
-
-const modeButtons = document.querySelectorAll(".modeBtn");
-
+const modes = document.querySelectorAll(".mode");
 let currentMode = "Summary";
 
-modeButtons.forEach((button) => {
+// MODE SWITCH
+modes.forEach((m) => {
+  m.addEventListener("click", () => {
 
-  button.addEventListener("click", () => {
+    modes.forEach(x => x.classList.remove("active"));
+    m.classList.add("active");
 
-    currentMode = button.innerText;
-
-    modeButtons.forEach((btn) => {
-      btn.classList.remove("activeMode");
-    });
-
-    button.classList.add("activeMode");
-
+    currentMode = m.innerText;
   });
-
 });
 
-function setOutput(text){
-  output.innerHTML = text;
+function show(text) {
+  output.textContent = text;
 }
 
-generateBtn.addEventListener("click", async () => {
+btn.addEventListener("click", async () => {
 
-  const userMessage = input.value;
+  const text = input.value.trim();
 
-  if(!userMessage){
-    alert("Enter notes or a question.");
+  if (!text) {
+    alert("Please enter content");
     return;
   }
 
-  setOutput("Generating AI study materials...");
+  show("Generating...");
 
-  try{
+  const prompt = `
+You are an elite AI study assistant.
 
-    // GEMINI
-
-    const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_GEMINI_KEY",
-      {
-        method:"POST",
-
-        headers:{
-          "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-          contents:[
-            {
-              parts:[
-                {
-                  text:`
-
-You are an advanced AI study assistant.
-
-Current Mode:
-${currentMode}
+MODE: ${currentMode}
 
 Rules:
 
-If mode is Summary:
-- Create EXTREMELY detailed summaries
-- Add headings
-- Add bullet points
-- Add definitions
-- Add examples
-- Add exam tips
-- Add important relationships
+If Summary:
+- Very detailed university-level notes
+- Headings
+- Bullet points
+- Definitions
+- Examples
+- Exam tips
 
-If mode is Flashcards:
-- Create detailed flashcards
+If Flashcards:
 - Format:
 Q:
 A:
+- Cover all key ideas
 
-If mode is Quiz:
-- Generate ${quizAmount.value} difficult quiz questions
-- Multiple choice
-- Include answers
-- Include explanations
+If Quiz:
+- Generate ${quizCount.value} multiple choice questions
+- Include answers and explanations
+- Make them HARD and exam level
 
-Student content:
-${userMessage}
+CONTENT:
+${text}
+`;
 
-                  `
-                }
-              ]
-            }
-          ]
+  try {
+
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_GEMINI_KEY",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
         })
       }
     );
 
-    const geminiData = await geminiResponse.json();
+    const data = await res.json();
 
-    const geminiText =
-      geminiData.candidates[0].content.parts[0].text;
+    const result =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response from AI.";
 
-    // OPENAI PLACEHOLDER
+    show(result);
 
-    const openAIText = `
-[OpenAI Enhancement]
-
-- Improved reasoning
-- Better structure
-- Better explanations
-`;
-
-    // CLAUDE PLACEHOLDER
-
-    const claudeText = `
-[Claude Enhancement]
-
-- Added educational clarity
-- Improved readability
-- Better concept connections
-`;
-
-    // FINAL OUTPUT
-
-    const finalOutput = `
-
-========================
-STUDYAI RESULTS
-========================
-
-${geminiText}
-
-${openAIText}
-
-${claudeText}
-
-`;
-
-    setOutput(finalOutput);
-
-  }catch(error){
-
-    console.log(error);
-
-    setOutput("Error generating AI content.");
-
+  } catch (err) {
+    console.log(err);
+    show("Error connecting to Gemini API.");
   }
 
 });
-```
