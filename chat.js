@@ -1,26 +1,54 @@
 ```javascript
 // chat.js
 
-const sendBtn = document.getElementById("sendBtn");
+const generateBtn = document.getElementById("generateBtn");
+
 const input = document.getElementById("messageInput");
-const messages = document.getElementById("messages");
+
+const output = document.getElementById("output");
+
 const quizAmount = document.getElementById("quizAmount");
 
-function addMessage(text){
-  messages.innerHTML = text;
+const modeButtons = document.querySelectorAll(".modeBtn");
+
+let currentMode = "Summary";
+
+modeButtons.forEach((button) => {
+
+  button.addEventListener("click", () => {
+
+    currentMode = button.innerText;
+
+    modeButtons.forEach((btn) => {
+      btn.classList.remove("activeMode");
+    });
+
+    button.classList.add("activeMode");
+
+  });
+
+});
+
+function setOutput(text){
+  output.innerHTML = text;
 }
 
-sendBtn.addEventListener("click", async () => {
+generateBtn.addEventListener("click", async () => {
 
-  const message = input.value;
+  const userMessage = input.value;
 
-  if(!message) return;
+  if(!userMessage){
+    alert("Enter notes or a question.");
+    return;
+  }
 
-  addMessage("Generating detailed study materials...");
+  setOutput("Generating AI study materials...");
 
   try{
 
-    const response = await fetch(
+    // GEMINI
+
+    const geminiResponse = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_GEMINI_KEY",
       {
         method:"POST",
@@ -35,23 +63,38 @@ sendBtn.addEventListener("click", async () => {
               parts:[
                 {
                   text:`
+
 You are an advanced AI study assistant.
 
-Generate VERY detailed study materials.
+Current Mode:
+${currentMode}
 
-Requirements:
-- Deep explanations
-- Examples
-- Key concepts
-- Definitions
-- Bullet points
-- Exam tips
-- Flashcards if useful
-- ${quizAmount.value} quiz questions if requested
-- Detailed summaries
+Rules:
 
-Student request:
-${message}
+If mode is Summary:
+- Create EXTREMELY detailed summaries
+- Add headings
+- Add bullet points
+- Add definitions
+- Add examples
+- Add exam tips
+- Add important relationships
+
+If mode is Flashcards:
+- Create detailed flashcards
+- Format:
+Q:
+A:
+
+If mode is Quiz:
+- Generate ${quizAmount.value} difficult quiz questions
+- Multiple choice
+- Include answers
+- Include explanations
+
+Student content:
+${userMessage}
+
                   `
                 }
               ]
@@ -61,18 +104,54 @@ ${message}
       }
     );
 
-    const data = await response.json();
+    const geminiData = await geminiResponse.json();
 
-    const reply =
-      data.candidates[0].content.parts[0].text;
+    const geminiText =
+      geminiData.candidates[0].content.parts[0].text;
 
-    addMessage(reply);
+    // OPENAI PLACEHOLDER
+
+    const openAIText = `
+[OpenAI Enhancement]
+
+- Improved reasoning
+- Better structure
+- Better explanations
+`;
+
+    // CLAUDE PLACEHOLDER
+
+    const claudeText = `
+[Claude Enhancement]
+
+- Added educational clarity
+- Improved readability
+- Better concept connections
+`;
+
+    // FINAL OUTPUT
+
+    const finalOutput = `
+
+========================
+STUDYAI RESULTS
+========================
+
+${geminiText}
+
+${openAIText}
+
+${claudeText}
+
+`;
+
+    setOutput(finalOutput);
 
   }catch(error){
 
     console.log(error);
 
-    addMessage("Error generating AI response.");
+    setOutput("Error generating AI content.");
 
   }
 
