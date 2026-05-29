@@ -1,6 +1,5 @@
 // api/chat.js
 export default async function handler(req, res) {
-  // Handle preflight CORS requests from your local machine
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -15,9 +14,8 @@ export default async function handler(req, res) {
   try {
     const { system, messages } = req.body;
     
-    // Construct standard format to communicate with OpenAI-compatible endpoints
     const payload = {
-      model: "gpt-4o-mini", // Or your host's designated model parameter
+      model: "gpt-4o-mini", 
       messages: [
         { role: "system", content: system },
         ...messages
@@ -25,7 +23,6 @@ export default async function handler(req, res) {
       temperature: 0.3
     };
 
-    // Forward request securely to your host provider's processing array
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
