@@ -1,78 +1,80 @@
-const messages = document.getElementById("messages");
-const input = document.getElementById("messageInput");
+```javascript
+// chat.js
+
 const sendBtn = document.getElementById("sendBtn");
+const input = document.getElementById("messageInput");
+const messages = document.getElementById("messages");
+const quizAmount = document.getElementById("quizAmount");
 
-function addMessage(text, sender = "user") {
-
-  const message = document.createElement("div");
-
-  message.className = `
-    p-4
-    rounded-2xl
-    max-w-xl
-    whitespace-pre-wrap
-    ${sender === "user"
-      ? "bg-blue-600 ml-auto"
-      : "glass"}
-  `;
-
-  message.textContent = text;
-
-  messages.appendChild(message);
-
-  messages.scrollTop = messages.scrollHeight;
+function addMessage(text){
+  messages.innerHTML = text;
 }
 
-async function sendMessage() {
+sendBtn.addEventListener("click", async () => {
 
-  const text = input.value.trim();
+  const message = input.value;
 
-  if (!text) return;
+  if(!message) return;
 
-  addMessage(text, "user");
+  addMessage("Generating detailed study materials...");
 
-  input.value = "";
+  try{
 
-  addMessage("Thinking...", "ai");
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=YOUR_GEMINI_KEY",
+      {
+        method:"POST",
 
-  const thinkingMessage = messages.lastChild;
+        headers:{
+          "Content-Type":"application/json"
+        },
 
-  try {
+        body:JSON.stringify({
+          contents:[
+            {
+              parts:[
+                {
+                  text:`
+You are an advanced AI study assistant.
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
+Generate VERY detailed study materials.
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+Requirements:
+- Deep explanations
+- Examples
+- Key concepts
+- Definitions
+- Bullet points
+- Exam tips
+- Flashcards if useful
+- ${quizAmount.value} quiz questions if requested
+- Detailed summaries
 
-      body: JSON.stringify({
-        message: text,
-      }),
-    });
+Student request:
+${message}
+                  `
+                }
+              ]
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
 
-    thinkingMessage.remove();
+    const reply =
+      data.candidates[0].content.parts[0].text;
 
-    addMessage(data.reply, "ai");
+    addMessage(reply);
 
-  } catch (error) {
+  }catch(error){
 
-    thinkingMessage.remove();
+    console.log(error);
 
-    addMessage("Error connecting to AI.", "ai");
+    addMessage("Error generating AI response.");
 
-    console.error(error);
-  }
-}
-
-sendBtn.addEventListener("click", sendMessage);
-
-input.addEventListener("keypress", (e) => {
-
-  if (e.key === "Enter") {
-    sendMessage();
   }
 
 });
+```
